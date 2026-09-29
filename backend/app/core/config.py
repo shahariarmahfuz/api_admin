@@ -52,6 +52,7 @@ class Settings(BaseSettings):
     # Security & JWT
     JWT_SECRET: str = "orvia_jwt_secure_secret_prod_grade_9f83acb14e27da6c88e"
     API_SECRET: str = "orvia_internal_api_secret_key_production_39a8c17b5f"
+    CREDENTIAL_ENCRYPTION_KEY: str = "4okCR2nlI_fX8jdkO-1mAHuQPAVe_VsS3BGyBudc3wo="
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
 

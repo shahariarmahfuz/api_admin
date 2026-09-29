@@ -32,8 +32,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# OS & Editor
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
+# Logs & Tunnels
+*.log
+tunnel_*.log
+

@@ -6,10 +6,12 @@ import { api } from '@/lib/api-client';
 import { User } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 import { Users, PlusCircle, Trash2, Power, Shield, ShieldCheck, X } from 'lucide-react';
+import { ConfirmationModal } from '@/components/ConfirmationModal';
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [newUser, setNewUser] = useState({
     email: '',
     password: '',
@@ -144,11 +146,7 @@ export default function AdminUsersPage() {
                           <Power className="h-3.5 w-3.5" />
                         </button>
                         <button
-                          onClick={() => {
-                            if (confirm(`Delete user '${u.email}'?`)) {
-                              deleteMutation.mutate(u.id);
-                            }
-                          }}
+                          onClick={() => setUserToDelete(u)}
                           title="Delete User"
                           className="rounded p-1 text-[#71717A] hover:bg-[#141414] hover:text-rose-400"
                         >
@@ -250,6 +248,27 @@ export default function AdminUsersPage() {
           </div>
         </div>
       )}
+
+      {/* AMOLED Custom Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={!!userToDelete}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={async () => {
+          if (userToDelete) {
+            await deleteMutation.mutateAsync(userToDelete.id);
+            setUserToDelete(null);
+          }
+        }}
+        title="Delete User Account"
+        itemName={userToDelete?.email}
+        description={
+          userToDelete
+            ? `Are you sure you want to permanently delete user "${userToDelete.email}"? All API keys and access permissions will be revoked.`
+            : undefined
+        }
+        confirmText="Delete User"
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }

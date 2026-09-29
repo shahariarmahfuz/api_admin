@@ -18,6 +18,7 @@ import {
   Settings,
   X,
   FileText,
+  Terminal,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -40,7 +41,8 @@ export function AdminSidebar({ mobileOpen = false, onCloseMobile }: SidebarProps
       title: 'API MANAGEMENT',
       items: [
         { href: '/admin/apis', label: 'All APIs', icon: Layers },
-        { href: '/admin/apis/add', label: 'Add API', icon: PlusCircle },
+        { href: '/admin/apis/add', label: 'Register API', icon: PlusCircle },
+        { href: '/admin/api-test', label: 'API Tester', icon: Terminal },
       ],
     },
     {

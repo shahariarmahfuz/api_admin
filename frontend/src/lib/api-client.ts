@@ -1,4 +1,4 @@
-import { StandardApiResponse } from './types';
+import { StandardApiResponse, ProviderBlueprint, ProviderIntegration, TestHistoryItem } from './types';
 
 const API_BASE_URL =
   typeof window !== 'undefined'
@@ -228,6 +228,80 @@ export const api = {
     return request<any>(`/api/v1/users/${id}`, {
       method: 'DELETE',
     });
+  },
+
+  // Providers & Real Integrations
+  async getProviderBlueprints(): Promise<StandardApiResponse<ProviderBlueprint[]>> {
+    return request<ProviderBlueprint[]>('/api/v1/admin/providers/available');
+  },
+
+  async testProviderConnection(payload: {
+    provider_name: string;
+    credentials: Record<string, any>;
+    base_url?: string;
+  }): Promise<StandardApiResponse<{ success: boolean; message: string; latency_ms: number; details?: any }>> {
+    return request('/api/v1/admin/providers/test-connection', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getProviders(): Promise<StandardApiResponse<ProviderIntegration[]>> {
+    return request<ProviderIntegration[]>('/api/v1/admin/providers');
+  },
+
+  async createProvider(data: {
+    provider_name: string;
+    display_name: string;
+    base_url?: string;
+    credentials: Record<string, any>;
+    register_services?: boolean;
+  }): Promise<StandardApiResponse<ProviderIntegration>> {
+    return request<ProviderIntegration>('/api/v1/admin/providers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async updateProvider(id: string, data: {
+    display_name?: string;
+    credentials: Record<string, any>;
+  }): Promise<StandardApiResponse<ProviderIntegration>> {
+    return request<ProviderIntegration>(`/api/v1/admin/providers/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deleteProvider(id: string): Promise<StandardApiResponse<any>> {
+    return request(`/api/v1/admin/providers/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Admin API Tester
+  async executeAdminTest(data: {
+    provider_id?: string;
+    provider_name: string;
+    api_slug?: string;
+    operation: string;
+    params?: Record<string, any>;
+  }): Promise<StandardApiResponse<any>> {
+    return request('/api/v1/admin/tester/execute', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async executeAdminUploadTest(formData: FormData): Promise<StandardApiResponse<any>> {
+    return request('/api/v1/admin/tester/execute-upload', {
+      method: 'POST',
+      body: formData,
+    });
+  },
+
+  async getAdminTestHistory(limit: number = 20): Promise<StandardApiResponse<TestHistoryItem[]>> {
+    return request<TestHistoryItem[]>(`/api/v1/admin/tester/history?limit=${limit}`);
   },
 
   // Interactive Live API Runner

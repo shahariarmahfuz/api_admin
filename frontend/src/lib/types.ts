@@ -110,3 +110,51 @@ export interface PaginatedData<T> {
   page_size: number;
   total_pages: number;
 }
+
+export interface ProviderFieldSchema {
+  key: string;
+  label: string;
+  type: 'text' | 'password' | 'url';
+  required: boolean;
+  placeholder?: string;
+  description?: string;
+  default?: string;
+}
+
+export interface ProviderBlueprint {
+  provider_name: string;
+  display_name: string;
+  description: string;
+  icon: string;
+  category: string;
+  docs_url?: string;
+  fields: ProviderFieldSchema[];
+  supported_operations: string[];
+}
+
+export interface ProviderIntegration {
+  id: string;
+  user_id: string;
+  provider_name: string;
+  display_name: string;
+  base_url?: string | null;
+  status: string;
+  last_tested_at?: string | null;
+  created_at: string;
+  updated_at: string;
+  masked_credentials: Record<string, string>;
+  api_services: ApiService[];
+}
+
+export interface TestHistoryItem {
+  id: string;
+  provider_id?: string | null;
+  provider_name: string;
+  api_slug?: string | null;
+  operation: string;
+  status_code: number;
+  response_time_ms: number;
+  success: boolean;
+  error_message?: string | null;
+  created_at: string;
+}

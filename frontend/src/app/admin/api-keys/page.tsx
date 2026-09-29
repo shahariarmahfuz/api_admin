@@ -18,11 +18,13 @@ import {
   Clock,
   Activity,
 } from 'lucide-react';
+import { ConfirmationModal } from '@/components/ConfirmationModal';
 
 export default function AdminApiKeysPage() {
   const queryClient = useQueryClient();
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [keyCreatedResult, setKeyCreatedResult] = useState<any | null>(null);
+  const [keyToRevoke, setKeyToRevoke] = useState<ApiKey | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
 
   // Form State
@@ -179,11 +181,7 @@ export default function AdminApiKeysPage() {
                         </button>
 
                         <button
-                          onClick={() => {
-                            if (confirm(`Permanently revoke API key '${key.name}'?`)) {
-                              revokeMutation.mutate(key.id);
-                            }
-                          }}
+                          onClick={() => setKeyToRevoke(key)}
                           title="Revoke Key Permanently"
                           className="rounded p-1 text-[#71717A] hover:bg-[#141414] hover:text-rose-400"
                         >
@@ -321,6 +319,27 @@ export default function AdminApiKeysPage() {
           </div>
         </div>
       )}
+
+      {/* AMOLED Custom Revoke Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={!!keyToRevoke}
+        onClose={() => setKeyToRevoke(null)}
+        onConfirm={async () => {
+          if (keyToRevoke) {
+            await revokeMutation.mutateAsync(keyToRevoke.id);
+            setKeyToRevoke(null);
+          }
+        }}
+        title="Revoke API Key"
+        itemName={keyToRevoke?.name}
+        description={
+          keyToRevoke
+            ? `Are you sure you want to permanently revoke API key "${keyToRevoke.name}" (${keyToRevoke.key_prefix}••••••••)? Any client or integration using this key will immediately lose access.`
+            : undefined
+        }
+        confirmText="Revoke Key"
+        isLoading={revokeMutation.isPending}
+      />
     </div>
   );
 }
