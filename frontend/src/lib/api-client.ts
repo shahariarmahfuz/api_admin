@@ -1,8 +1,9 @@
 import { StandardApiResponse } from './types';
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== 'undefined' ? '' : 'http://localhost:8000');
+  typeof window !== 'undefined'
+    ? ''
+    : (process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000');
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
