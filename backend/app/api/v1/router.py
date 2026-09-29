@@ -32,3 +32,15 @@ api_v1_router.include_router(image_router)
 api_v1_router.include_router(media_router)
 api_v1_router.include_router(social_router)
 api_v1_router.include_router(cloudinary_router)
+
+
+@api_v1_router.get("/health")
+async def v1_health():
+    return {
+        "success": True,
+        "data": {
+            "status": "healthy",
+        },
+        "message": "Internal API Gateway operational",
+    }
+

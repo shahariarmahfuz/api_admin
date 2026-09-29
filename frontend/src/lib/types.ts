@@ -4,8 +4,19 @@ export interface User {
   full_name: string;
   role: 'admin' | 'user';
   is_active: boolean;
+  avatar_url?: string | null;
+  last_login_at?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface SecurityDetails {
+  email: string;
+  role: string;
+  created_at: string;
+  last_login_at: string | null;
+  active_api_keys_count: number;
+  password_last_changed: string | null;
 }
 
 export interface ApiKey {

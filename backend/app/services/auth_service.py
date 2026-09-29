@@ -38,6 +38,11 @@ class AuthService:
         if not verify_password(payload.password, user.hashed_password):
             return None, "Invalid email or password"
 
+        from datetime import datetime, timezone
+        user.last_login_at = datetime.now(timezone.utc)
+        await self.db.commit()
+        await self.db.refresh(user)
+
         return user, None
 
     def create_token_for_user(self, user: User) -> str:

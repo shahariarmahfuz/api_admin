@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: orvia-api-platform
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: BACKEND_INTERNAL_URL
+        value: http://127.0.0.1:8000
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CREDENTIAL_ENCRYPTION_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: '["*"]'
+      - key: ADMIN_DEFAULT_EMAIL
+        value: admin@orvia.dev
+      - key: ADMIN_DEFAULT_PASSWORD
+        value: admin_secret_123

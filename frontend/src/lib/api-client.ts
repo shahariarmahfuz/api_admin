@@ -1,9 +1,19 @@
-import { StandardApiResponse, ProviderBlueprint, ProviderIntegration, TestHistoryItem } from './types';
+import {
+  StandardApiResponse,
+  ProviderBlueprint,
+  ProviderIntegration,
+  TestHistoryItem,
+  User,
+  SecurityDetails,
+} from './types';
 
 const API_BASE_URL =
   typeof window !== 'undefined'
     ? ''
-    : (process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000');
+    : (process.env.BACKEND_INTERNAL_URL ||
+       process.env.BACKEND_URL ||
+       process.env.NEXT_PUBLIC_API_URL ||
+       'http://127.0.0.1:8000');
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
@@ -228,6 +238,47 @@ export const api = {
     return request<any>(`/api/v1/users/${id}`, {
       method: 'DELETE',
     });
+  },
+
+  // Current User Self-Service Profile & Security
+  async getMyProfile(): Promise<StandardApiResponse<User>> {
+    return request<User>('/api/v1/users/me');
+  },
+
+  async updateMyProfile(data: { full_name?: string; avatar_url?: string }): Promise<StandardApiResponse<User>> {
+    return request<User>('/api/v1/users/me', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async uploadMyAvatar(file: File): Promise<StandardApiResponse<User>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return request<User>('/api/v1/users/me/avatar', {
+      method: 'POST',
+      body: formData,
+    });
+  },
+
+  async removeMyAvatar(): Promise<StandardApiResponse<User>> {
+    return request<User>('/api/v1/users/me/avatar', {
+      method: 'DELETE',
+    });
+  },
+
+  async changeMyPassword(data: {
+    current_password: string;
+    new_password: string;
+  }): Promise<StandardApiResponse<{ updated: boolean }>> {
+    return request('/api/v1/users/me/change-password', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async getMySecurityOverview(): Promise<StandardApiResponse<SecurityDetails>> {
+    return request<SecurityDetails>('/api/v1/users/me/security');
   },
 
   // Providers & Real Integrations
