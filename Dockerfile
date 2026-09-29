@@ -5,7 +5,7 @@ FROM node:20-bookworm-slim AS frontend-builder
 WORKDIR /app/frontend
 
 COPY frontend/package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY frontend/ ./
 ENV NEXT_TELEMETRY_DISABLED=1
